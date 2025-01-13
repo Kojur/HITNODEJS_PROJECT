@@ -9,7 +9,10 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 const app = express();
-mongoose.connect('mongodb://localhost:27017/webstore');
+mongoose.connect('mongodb://127.0.0.1:27017/webstore', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
