@@ -49,13 +49,14 @@ const mongoose = require('mongoose');
 // Routes
 const userRouter = require('./routes/users');
 const costRouter = require('./routes/costs');
+const aboutRouter = require('./routes/about');
 
 // Instances
-const PORT = 3000;
 const app = express()
 app.use(express.json());
 
 // Routes Prefix
+app.use('/api/about', aboutRouter);
 app.use('/api/users', userRouter);
 app.use('/api', costRouter);
 
@@ -66,8 +67,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/webstore' , {
   useUnifiedTopology: true,
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+//app.listen(PORT, () => {
+  //console.log(`Server is running on http://localhost:${PORT}`);
+//});
 
 module.exports = app;
