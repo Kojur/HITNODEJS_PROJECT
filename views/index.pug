@@ -1,5 +1,9 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1 HIT Project
+  p Welcome to the Expense Manager
+  ul
+    li: a(href='/api/about') About Us
+    li: a(href='/api/users/123123') View User
+    li: a(href='/api/report?id=123123&year=2025&month=1') View Cost Report

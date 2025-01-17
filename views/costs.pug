@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    h1 Cost Report
+    if error
+        p Error: #{error}
+    else
+        each cost in costs
+            div
+                p Description: #{cost.description}
+                p Category: #{cost.category}
+                p Amount: #{cost.sum}
+                p Date: #{cost.date}

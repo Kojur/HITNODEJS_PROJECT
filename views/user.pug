@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    h1 User Details
+    if error
+        p Error: #{error}
+    else
+        p ID: #{user.id}
+        p Name: #{user.first_name} #{user.last_name}
+        p Total Expenses: #{user.total}
