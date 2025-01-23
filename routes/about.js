@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
         }
     ];
 
-    res.json(team);
+    res.render("about",{team:team});
 });
 
 module.exports = router;

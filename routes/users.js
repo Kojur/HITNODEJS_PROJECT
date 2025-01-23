@@ -9,11 +9,12 @@ router.get('/:userid', async function(req, res, next) {
     const userId = parseInt(req.params.userid);
     const user = await User.findOne({id: userId});
     if (!user) {
-      res.status(404).json({error: 'User not found'});
+      let error = new Error('User not found');
+      res.status(404).render("error",{message: error.message, error});
     }
     else {
       const user_json = {'id': userId, 'first_name': user.first_name, 'last_name': user.last_name, 'total': user.total};
-      res.json(user_json);
+      res.render("user",{user: user_json});
     }
   } catch (err) {
     res.status(400).json({ error: err.message });

@@ -16,10 +16,8 @@ router.post('/add', async (req, res) => {
 router.get('/report', async (req, res) => {
     try {
         const { id, year, month } = req.query;
-
         const startDate = new Date(year, month - 1, 1);
         const endDate = new Date(year, month, 0);
-
         const costs = await Cost.find({
             userid: id,
             date: {
@@ -27,8 +25,12 @@ router.get('/report', async (req, res) => {
                 $lte: endDate
             }
         });
-
-        res.json(costs);
+        if (!costs.length) {
+            let error = new Error('Costs or User not found');
+            res.status(404).render("error",{message: error.message, error});
+        } else {
+            res.render("costs", {costs: costs, userId: id});
+        }
     } catch (err) {
         res.status(400).json({ error: err.message });
     }

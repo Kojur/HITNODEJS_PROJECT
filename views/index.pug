@@ -3,7 +3,46 @@ extends layout
 block content
   h1 HIT Project
   p Welcome to the Expense Manager
+
   ul
     li: a(href='/api/about') About Us
-    li: a(href='/api/users/123123') View User
-    li: a(href='/api/report?id=123123&year=2025&month=1') View Cost Report
+
+    li
+      form(id='userForm')
+        label(for='userId') Enter User ID:
+        input(type='text' id='userId' required)
+        button(type='submit') View User
+      p Enter a user ID to view user details.
+
+    li
+      form(id='reportForm')
+        label(for='reportUserId') Enter User ID:
+        input(type='text' id='reportUserId' required)
+
+        label(for='year') Year:
+        input(type='number' id='year' value='2025' required)
+
+        label(for='month') Month:
+        input(type='number' id='month' min='1' max='12' value='1' required)
+
+        button(type='submit') View Cost Report
+      p Enter user ID, year, and month to view the cost report.
+
+  script.
+    document.getElementById('userForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const userId = document.getElementById('userId').value.trim();
+      if (userId) {
+        window.location.href = `/api/users/${userId}`;
+      }
+    });
+
+    document.getElementById('reportForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const userId = document.getElementById('reportUserId').value.trim();
+      const year = document.getElementById('year').value;
+      const month = document.getElementById('month').value;
+      if (userId) {
+        window.location.href = `/api/report?id=${userId}&year=${year}&month=${month}`;
+      }
+    });
