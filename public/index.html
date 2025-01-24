@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HIT Project</title>
+</head>
+<body>
+<h1>HIT Project</h1>
+<p>Welcome to the Expense Manager</p>
+
+<ul>
+  <li><a href="about.html">About Us</a></li>
+  <li>
+    <form id="userForm">
+      <label for="userId">Enter User ID:</label>
+      <input type="text" id="userId" required>
+      <button type="submit">View User</button>
+    </form>
+  </li>
+  <li>
+    <form id="reportForm">
+      <label for="reportUserId">Enter User ID:</label>
+      <input type="text" id="reportUserId" required>
+
+      <label for="year">Year:</label>
+      <input type="number" id="year" value="2025" required>
+
+      <label for="month">Month:</label>
+      <input type="number" id="month" min="1" max="12" value="1" required>
+
+      <button type="submit">View Cost Report</button>
+    </form>
+  </li>
+</ul>
+
+<script>
+  document.getElementById('userForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const userId = document.getElementById('userId').value.trim();
+    if (userId) {
+      window.location.href = `user.html?id=${userId}`;
+    }
+  });
+
+  document.getElementById('reportForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const userId = document.getElementById('reportUserId').value.trim();
+    const year = document.getElementById('year').value;
+    const month = document.getElementById('month').value;
+    if (userId) {
+      window.location.href = `costs.html?id=${userId}&year=${year}&month=${month}`;
+    }
+  });
+</script>
+</body>
+</html>

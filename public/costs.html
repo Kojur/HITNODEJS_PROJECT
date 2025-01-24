@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cost Report</title>
+</head>
+<body>
+<h1>Cost Report</h1>
+
+<div id="costs-container">
+  <p>Loading...</p>
+</div>
+
+<script>
+  async function fetchCosts() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("id");
+    const year = urlParams.get("year");
+    const month = urlParams.get("month");
+
+    if (!userId || !year || !month) {
+      document.getElementById("costs-container").innerHTML = "<p>Missing parameters!</p>";
+      return;
+    }
+
+    console.log(`Fetching costs for user ${userId}, year ${year}, month ${month}`);
+
+    try {
+      const response = await fetch(`/api/report?id=${userId}&year=${year}&month=${month}`);
+      const costs = await response.json();
+
+      console.log("API Response:", costs);
+
+      const container = document.getElementById("costs-container");
+      if (!container) {
+        console.error("Error: costs-container element not found.");
+        return;
+      }
+
+      container.innerHTML = "";
+
+      if (!costs || costs.length === 0) {
+        container.innerHTML = "<p>No costs found.</p>";
+        return;
+      }
+
+      // Iterate through each category
+      costs.forEach(category => {
+        console.log("Processing category:", category._id);
+        const categoryDiv = document.createElement("div");
+        categoryDiv.innerHTML = `<h2>${category._id}</h2>`;
+
+        if (!category.records || category.records.length === 0) {
+          categoryDiv.innerHTML += "<p>No records in this category.</p>";
+        } else {
+          category.records.forEach(cost => {
+            console.log("Processing record:", cost);
+            const costEntry = document.createElement("div");
+            costEntry.innerHTML = `
+                                <p>Description: ${cost.description}</p>
+                                <p>Amount: ${cost.sum}</p>
+                                <p>Date: ${new Date(cost.date).toLocaleDateString()}</p>
+                                <hr>
+                            `;
+            categoryDiv.appendChild(costEntry);
+          });
+        }
+
+        container.appendChild(categoryDiv);
+      });
+
+    } catch (error) {
+      console.error("Error fetching costs:", error);
+      document.getElementById("costs-container").innerHTML = "<p>Error loading data.</p>";
+    }
+  }
+
+  fetchCosts();
+</script>
+</body>
+</html>

@@ -12,8 +12,7 @@ router.get('/', (req, res) => {
             last_name: "Mitnik"
         }
     ];
-
-    res.render("about",{team:team});
+    res.json(team);
 });
 
 module.exports = router;

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us</title>
+</head>
+<body>
+<h1>About Us</h1>
+<ul id="team-list"></ul>
+
+<script>
+  async function fetchTeam() {
+    const response = await fetch('/api/about');
+    const team = await response.json();
+
+    const list = document.getElementById("team-list");
+    list.innerHTML = "";
+
+    team.forEach(member => {
+      const li = document.createElement("li");
+      li.textContent = `${member.first_name} ${member.last_name}`;
+      list.appendChild(li);
+    });
+  }
+
+  fetchTeam();
+</script>
+</body>
+</html>
