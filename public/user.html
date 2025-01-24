@@ -14,17 +14,33 @@
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("id");
 
-    const response = await fetch(`/api/users/${userId}`);
-    const user = await response.json();
+    try {
+      const response = await fetch(`/api/users/${userId}`);
 
-    document.getElementById("user-container").innerHTML = `
-                <p>ID: ${user.id}</p>
-                <p>Name: ${user.first_name} ${user.last_name}</p>
-                <p>Total Expenses: ${user.total}</p>
-            `;
+      if (!response.ok) {
+        throw new Error("User not found"); // Handle 404 case
+      }
+
+      const user = await response.json();
+
+      // Ensure user object has valid properties
+      if (!user || !user.id) {
+        throw new Error("Invalid user data received");
+      }
+
+      document.getElementById("user-container").innerHTML = `
+          <p>ID: ${user.id}</p>
+          <p>Name: ${user.first_name} ${user.last_name}</p>
+          <p>Total Expenses: ${user.total}</p>
+      `;
+
+    } catch (error) {
+      document.getElementById("user-container").innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+    }
   }
 
   fetchUser();
 </script>
+
 </body>
 </html>
