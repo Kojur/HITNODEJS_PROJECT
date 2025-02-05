@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Cost = require('../models/cost');
+const utils = require('../logic/utils');
 /**
  * @swagger
  * /api/report:
@@ -125,9 +126,11 @@ const Cost = require('../models/cost');
  */
 router.post('/add', async (req, res) => {
     try{
-        console.log(req.body);
-        const cost = new Cost(req.body);
+        let body = req.body;
+        body.category = body.category.toLowerCase();
+        const cost = new Cost(body);
         const savedCost = await cost.save();
+        await utils.addFundsToUser(body.sum,body.userid);
         res.status(201).json(savedCost);
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -161,12 +164,14 @@ router.get('/report', async (req, res) => {
                 }
             }
         ]);
-        console.log(costs);
+
         if (!costs.length) {
             let error = new Error('Costs or User not found');
             res.status(404).json(error);
         } else {
-            res.json(costs);
+            const details = {id,year, month};
+            const categorizedCosts = utils.categorizeCostItems(costs,details);
+            res.json(categorizedCosts);
         }
     } catch (err) {
         res.status(400).json({ error: err.message });
