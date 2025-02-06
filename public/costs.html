@@ -3,10 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Default title which will be updated dynamically -->
   <title>Cost Report</title>
+  <style>
+    /* Basic Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    header {
+      background-color: #007bff;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    #costs-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+
+    h1 {
+      font-size: 2em;
+    }
+
+    h2 {
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 5px;
+      margin-top: 20px;
+      color: #007bff;
+    }
+
+    .cost-entry {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px dotted #ccc;
+    }
+
+    .cost-entry p {
+      margin: 5px 0;
+    }
+  </style>
 </head>
 <body>
-<h1>Cost Report</h1>
+<header>
+  <!-- The header title will be updated with user ID, month, and year -->
+  <h1 id="page-title">Cost Report</h1>
+</header>
 
 <div id="costs-container">
   <p>Loading...</p>
@@ -19,6 +78,16 @@
     const year = urlParams.get("year");
     const month = urlParams.get("month");
 
+    // If parameters exist, update both the browser tab title and header text.
+    if (userId && year && month) {
+      const formattedTitle = `Cost Report for User ${userId} - ${month}/${year}`;
+      document.title = formattedTitle;
+      const pageTitle = document.getElementById("page-title");
+      if (pageTitle) {
+        pageTitle.textContent = formattedTitle;
+      }
+    }
+
     if (!userId || !year || !month) {
       document.getElementById("costs-container").innerHTML = "<p>Missing parameters!</p>";
       return;
@@ -28,9 +97,9 @@
 
     try {
       const response = await fetch(`/api/report?id=${userId}&year=${year}&month=${month}`);
-      const costs = await response.json();
+      const data = await response.json();
 
-      console.log("API Response:", costs);
+      console.log("API Response:", data);
 
       const container = document.getElementById("costs-container");
       if (!container) {
@@ -40,29 +109,35 @@
 
       container.innerHTML = "";
 
-      if (!costs || costs.length === 0) {
+      // Check if costs exist in the returned data
+      if (!data || !data.costs || data.costs.length === 0) {
         container.innerHTML = "<p>No costs found.</p>";
         return;
       }
 
-      // Iterate through each category
-      costs.forEach(category => {
-        console.log("Processing category:", category._id);
-        const categoryDiv = document.createElement("div");
-        categoryDiv.innerHTML = `<h2>${category._id}</h2>`;
+      // Iterate through each category object in the costs array
+      data.costs.forEach(categoryObj => {
+        // Each categoryObj is an object with one key representing the category name
+        const categoryName = Object.keys(categoryObj)[0];
+        const records = categoryObj[categoryName];
 
-        if (!category.records || category.records.length === 0) {
+        console.log("Processing category:", categoryName);
+
+        const categoryDiv = document.createElement("div");
+        categoryDiv.innerHTML = `<h2>${categoryName}</h2>`;
+
+        if (!records || records.length === 0) {
           categoryDiv.innerHTML += "<p>No records in this category.</p>";
         } else {
-          category.records.forEach(cost => {
+          records.forEach(cost => {
             console.log("Processing record:", cost);
             const costEntry = document.createElement("div");
+            costEntry.className = "cost-entry";
             costEntry.innerHTML = `
-                                <p>Description: ${cost.description}</p>
-                                <p>Amount: ${cost.sum}</p>
-                                <p>Date: ${new Date(cost.date).toLocaleDateString()}</p>
-                                <hr>
-                            `;
+                <p><strong>Description:</strong> ${cost.description}</p>
+                <p><strong>Amount:</strong> ${cost.sum}</p>
+                <p><strong>Day:</strong> ${cost.day}</p>
+              `;
             categoryDiv.appendChild(costEntry);
           });
         }

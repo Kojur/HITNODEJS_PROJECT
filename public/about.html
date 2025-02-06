@@ -1,27 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About Us</title>
+  <style>
+    /* Reset & Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Grid layout for team members */
+    #team-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      list-style: none;
+      padding: 0;
+    }
+
+    /* Card style for each team member */
+    .team-member {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .team-member:hover {
+      transform: translateY(-5px);
+    }
+
+    .team-member h2 {
+      font-size: 1.3rem;
+      color: #007bff;
+      margin-bottom: 5px;
+    }
+
+    .loading {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #555;
+      grid-column: 1 / -1;
+    }
+  </style>
 </head>
 <body>
-<h1>About Us</h1>
-<ul id="team-list"></ul>
+<header>
+  <h1>About Us</h1>
+</header>
+<div class="container">
+  <ul id="team-list">
+    <p class="loading">Loading team...</p>
+  </ul>
+</div>
 
 <script>
   async function fetchTeam() {
-    const response = await fetch('/api/about');
-    const team = await response.json();
+    try {
+      const response = await fetch('/api/about');
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+      const team = await response.json();
+      const list = document.getElementById("team-list");
+      list.innerHTML = "";
 
-    const list = document.getElementById("team-list");
-    list.innerHTML = "";
+      if (!team.length) {
+        list.innerHTML = "<p class='loading'>No team members found.</p>";
+        return;
+      }
 
-    team.forEach(member => {
-      const li = document.createElement("li");
-      li.textContent = `${member.first_name} ${member.last_name}`;
-      list.appendChild(li);
-    });
+      team.forEach(member => {
+        const memberCard = document.createElement("li");
+        memberCard.className = "team-member";
+        memberCard.innerHTML = `
+            <h2>${member.first_name} ${member.last_name}</h2>
+          `;
+        list.appendChild(memberCard);
+      });
+    } catch (error) {
+      document.getElementById("team-list").innerHTML = `<p class="loading">Error: ${error.message}</p>`;
+    }
   }
 
   fetchTeam();
