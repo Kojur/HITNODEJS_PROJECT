@@ -30,6 +30,7 @@
 // module.exports = app;
 
 // library
+require('dotenv').config();
 const express = require('express');
 const createError = require('http-errors');
 const mongoose = require('mongoose');
@@ -77,7 +78,16 @@ app.use('/', indexRouter);
 
 // MongoDB Connection
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb+srv://webapp:KXe5RyuveUuJuGnz@webstore.9hx3y.mongodb.net/webstore');
+const mongoURI = process.env.MONGO_URI;
+if (!mongoURI) {
+  console.error('Error: MONGO_URI is not defined in the environment variables.');
+  process.exit(1);
+}
+
+mongoose.connect(mongoURI)
+    .then(() => console.log('MongoDB connected successfully'))
+    .catch(err => console.error('MongoDB connection error:', err));
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
