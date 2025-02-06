@@ -77,10 +77,7 @@ app.use('/', indexRouter);
 
 // MongoDB Connection
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://127.0.0.1:27017/webstore' , {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect('mongodb+srv://webapp:KXe5RyuveUuJuGnz@webstore.9hx3y.mongodb.net/webstore');
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
