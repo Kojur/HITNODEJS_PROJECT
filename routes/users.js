@@ -49,13 +49,11 @@ const router = express.Router();
  * @returns {void}
  */
 router.get('/:userid', async function(req, res, next) {
-  console.log(req.params);
   try {
     const userId = parseInt(req.params.userid);
     const user = await User.findOne({id: userId});
     if (!user) {
-      let error = new Error('User not found');
-      res.status(404).json(error);
+      res.status(404).json({err: "User not found"});
     }
     else {
       const user_json = {'id': userId, 'first_name': user.first_name, 'last_name': user.last_name, 'total': user.total};

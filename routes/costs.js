@@ -166,8 +166,7 @@ router.get('/report', async (req, res) => {
         ]);
 
         if (!costs.length) {
-            let error = new Error('Costs or User not found');
-            res.status(404).json(error);
+            res.status(404).json({err: "No costs found"});
         } else {
             const details = {id,year, month};
             const categorizedCosts = utils.categorizeCostItems(costs,details);
