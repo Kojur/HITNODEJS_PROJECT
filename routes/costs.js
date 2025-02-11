@@ -125,7 +125,7 @@ const utils = require('../logic/utils');
  * @returns {void}
  */
 router.post('/add', async (req, res) => {
-    try{
+    try {
         let body = req.body;
         body.category = body.category.toLowerCase();
         const cost = new Cost(body);
@@ -164,9 +164,14 @@ router.get('/report', async (req, res) => {
                 }
             }
         ]);
-
         if (!costs.length) {
-            res.status(404).json({err: "No costs found"});
+            res.status(404).json({userid: id, year: year, month: month,
+            costs: [
+                {food:[]},
+                {sport:[]},
+                {housing:[]},
+                {education:[]},
+                {health:[]},]});
         } else {
             const details = {id,year, month};
             const categorizedCosts = utils.categorizeCostItems(costs,details);

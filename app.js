@@ -1,35 +1,3 @@
-
-// const express = require('express');
-// const path = require('path');
-// const cookieParser = require('cookie-parser');
-// const logger = require('morgan');
-// const db = require('db');
-//
-// const app = express();
-//
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'pug');
-//
-// const costRoutes = require('./routes/costs');
-// const userRoutes = require('./routes/users');
-// const aboutRoutes = require('./routes/about');
-//
-// app.use(logger('dev'));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
-// app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, 'public')));
-//
-// app.use('/api', costRoutes);
-// app.use('/api/users', userRoutes);
-// app.use('/api/about', aboutRoutes);
-//
-
-
-//
-// module.exports = app;
-
-// library
 require('dotenv').config();
 const express = require('express');
 const createError = require('http-errors');
