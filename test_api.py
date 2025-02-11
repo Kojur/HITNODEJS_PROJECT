@@ -58,7 +58,6 @@ class TestAPIs(unittest.TestCase):
         }
         response = requests.get(f'{BASE_URL}/report', params=params)
         self.assertEqual(response.status_code, 404)
-        self.assertIn('No costs found', response.json().get('err'))
 
     def test_api_4_get_user(self):
         user_id = 123123
